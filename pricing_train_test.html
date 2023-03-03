@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Pricing Model Selection &#8212; Mike and James Collaboration  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -11,9 +11,8 @@
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -233,10 +232,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -338,6 +338,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -346,10 +347,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -361,34 +366,37 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Pricing-Model-Selection">
-<h1>Pricing Model Selection<a class="headerlink" href="#Pricing-Model-Selection" title="Permalink to this headline">¶</a></h1>
+<h1>Pricing Model Selection<a class="headerlink" href="#Pricing-Model-Selection" title="Permalink to this heading">¶</a></h1>
 <section id="Using-one-dataset-to-learn-and-predict-on-the-other">
-<h2>Using one dataset to learn and predict on the other<a class="headerlink" href="#Using-one-dataset-to-learn-and-predict-on-the-other" title="Permalink to this headline">¶</a></h2>
+<h2>Using one dataset to learn and predict on the other<a class="headerlink" href="#Using-one-dataset-to-learn-and-predict-on-the-other" title="Permalink to this heading">¶</a></h2>
 </section>
 </section>
 <section id="DRAFT---UNFINISHED">
-<h1>DRAFT - UNFINISHED<a class="headerlink" href="#DRAFT---UNFINISHED" title="Permalink to this headline">¶</a></h1>
+<h1>DRAFT - UNFINISHED<a class="headerlink" href="#DRAFT---UNFINISHED" title="Permalink to this heading">¶</a></h1>
 <section id="Client-request">
-<h2>Client request<a class="headerlink" href="#Client-request" title="Permalink to this headline">¶</a></h2>
+<h2>Client request<a class="headerlink" href="#Client-request" title="Permalink to this heading">¶</a></h2>
 <p>Here is an excel file with 2 data sets. This is actual data.</p>
 <p>The first data set is a standard correlation where the baseline and benchmark show a strong correlation according to my simple method The second data set is an example where the correlation is good, until it is not for a period of 12 months or so, before the lines come back together. This was caused by a disruption by a fire at one supplier after which capacity was limited and the link between market pricing and cost driver pricing was no longer relevant</p>
 <p>Some notes The 2 data sets which I am running my analysis on are shaded in blue. I have added the formulas so you can see how they are calculated from the underlying data sets. Some of the data preparation (averaging, adjusting for lag, FX conversion) is not visible in this file but it is not so relevant for the statistics.</p>
 <p><strong>I would love to know if there is a better way to:</strong> - Understand or analyse the correlation between the 2 main lines - Understand the correlation between the base line and each of the individual cost drivers so that the cost drivers could be ranked in terms of relevance in some way</p>
 <p>I am available to answer any questions about this data.</p>
 <section id="Read-in-necessary-packages">
-<h3>Read in necessary packages<a class="headerlink" href="#Read-in-necessary-packages" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
+<h3>Read in necessary packages<a class="headerlink" href="#Read-in-necessary-packages" title="Permalink to this heading">¶</a></h3>
+<div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
@@ -410,6 +418,15 @@ div.rendered_html tbody tr:hover {
 <span class="kn">import</span> <span class="nn">shap</span>
 </pre></div>
 </div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/james/miniconda3/envs/ds_env/lib/python3.9/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
 </div>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
@@ -457,7 +474,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Set-plotting-style">
-<h3>Set plotting style<a class="headerlink" href="#Set-plotting-style" title="Permalink to this headline">¶</a></h3>
+<h3>Set plotting style<a class="headerlink" href="#Set-plotting-style" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
@@ -469,7 +486,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Read-in-data-frames">
-<h3>Read in data frames<a class="headerlink" href="#Read-in-data-frames" title="Permalink to this headline">¶</a></h3>
+<h3>Read in data frames<a class="headerlink" href="#Read-in-data-frames" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
@@ -489,7 +506,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Show-the-head-of-the-data-frame">
-<h3>Show the head of the data frame<a class="headerlink" href="#Show-the-head-of-the-data-frame" title="Permalink to this headline">¶</a></h3>
+<h3>Show the head of the data frame<a class="headerlink" href="#Show-the-head-of-the-data-frame" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
@@ -590,7 +607,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Define-the-target-and-display-simple-summary-statistics-of-the-columns">
-<h3>Define the target and display simple summary statistics of the columns<a class="headerlink" href="#Define-the-target-and-display-simple-summary-statistics-of-the-columns" title="Permalink to this headline">¶</a></h3>
+<h3>Define the target and display simple summary statistics of the columns<a class="headerlink" href="#Define-the-target-and-display-simple-summary-statistics-of-the-columns" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
@@ -825,7 +842,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </section>
 </section>
 <section id="Plot-the-amount-of-rows-in-the-target">
-<h2>Plot the amount of rows in the target<a class="headerlink" href="#Plot-the-amount-of-rows-in-the-target" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the amount of rows in the target<a class="headerlink" href="#Plot-the-amount-of-rows-in-the-target" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
@@ -864,7 +881,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Plot-the-heatmaps-of-the-raw-and-scaled-data">
-<h2>Plot the heatmaps of the raw and scaled data<a class="headerlink" href="#Plot-the-heatmaps-of-the-raw-and-scaled-data" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the heatmaps of the raw and scaled data<a class="headerlink" href="#Plot-the-heatmaps-of-the-raw-and-scaled-data" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
@@ -907,7 +924,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Plot-the-correlation-of-all-of-the-different-time-series-with-each-other">
-<h2>Plot the correlation of all of the different time series with each other<a class="headerlink" href="#Plot-the-correlation-of-all-of-the-different-time-series-with-each-other" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the correlation of all of the different time series with each other<a class="headerlink" href="#Plot-the-correlation-of-all-of-the-different-time-series-with-each-other" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
@@ -944,7 +961,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Plot-all-of-the-features-over-time">
-<h2>Plot all of the features over time<a class="headerlink" href="#Plot-all-of-the-features-over-time" title="Permalink to this headline">¶</a></h2>
+<h2>Plot all of the features over time<a class="headerlink" href="#Plot-all-of-the-features-over-time" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
 <div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
@@ -1059,11 +1076,19 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No data for colormapping provided via &#39;c&#39;. Parameters &#39;vmin&#39;, &#39;vmax&#39; will be ignored
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_train_test_36_0.png" src="_images/pricing_train_test_36_0.png" />
+<img alt="_images/pricing_train_test_36_1.png" src="_images/pricing_train_test_36_1.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1252,7 +1277,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
     <span class="n">user_ids_last</span> <span class="o">=</span> <span class="n">df_test</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> (test set) | RMSE = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> | bias Error = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> (test set) | RMSE = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> | bias Error = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">]),</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">rmse_plot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">df_test</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">],</span> <span class="n">use_line_collection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linefmt</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">markerfmt</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">2</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;+ RMSE&#39;</span><span class="p">,</span>
                     <span class="n">xmin</span> <span class="o">=</span> <span class="n">user_ids_first</span><span class="p">,</span>
@@ -1295,8 +1320,16 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+The &#39;use_line_collection&#39; parameter of stem() was deprecated in Matplotlib 3.6 and will be removed two minor releases later. If any parameter follows &#39;use_line_collection&#39;, they should be passed as keyword, not positionally.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_train_test_49_0.png" src="_images/pricing_train_test_49_0.png" />
+<img alt="_images/pricing_train_test_49_1.png" src="_images/pricing_train_test_49_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -1357,14 +1390,22 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_train_test_49_3.png" src="_images/pricing_train_test_49_3.png" />
+<img alt="_images/pricing_train_test_49_4.png" src="_images/pricing_train_test_49_4.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+The &#39;use_line_collection&#39; parameter of stem() was deprecated in Matplotlib 3.6 and will be removed two minor releases later. If any parameter follows &#39;use_line_collection&#39;, they should be passed as keyword, not positionally.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_train_test_49_4.png" src="_images/pricing_train_test_49_4.png" />
+<img alt="_images/pricing_train_test_49_6.png" src="_images/pricing_train_test_49_6.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -1425,7 +1466,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_train_test_49_7.png" src="_images/pricing_train_test_49_7.png" />
+<img alt="_images/pricing_train_test_49_9.png" src="_images/pricing_train_test_49_9.png" />
 </div>
 </div>
 <div class="nbinput docutils container">
@@ -1478,7 +1519,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
     </p>
     <p>
         &copy; Copyright 2022, James Twose.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 6.1.3.<br/>
     </p>
   </div>
 </footer>

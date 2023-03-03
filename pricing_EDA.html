@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 
-<html>
+<html lang="en">
   <head>
     <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.17.1: http://docutils.sourceforge.net/" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" /><meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
 
     <title>Pricing Exploratory Data Analysis &#8212; Mike and James Collaboration  documentation</title>
     <link rel="stylesheet" type="text/css" href="_static/pygments.css" />
@@ -11,9 +11,8 @@
     <link rel="stylesheet" type="text/css" href="_static/graphviz.css" />
     <link rel="stylesheet" type="text/css" href="_static/sg_gallery.css" />
     <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
-    <script src="_static/jquery.js"></script>
-    <script src="_static/underscore.js"></script>
     <script src="_static/doctools.js"></script>
+    <script src="_static/sphinx_highlight.js"></script>
     <script crossorigin="anonymous" integrity="sha256-Ae2Vz/4ePdIu6ZyI/5ZGsYnb+m0JlOmKPjt6XZ9JJkA=" src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.3.4/require.min.js"></script>
     <script>window.MathJax = {"tex": {"inlineMath": [["$", "$"], ["\\(", "\\)"]], "processEscapes": true}, "options": {"ignoreHtmlClass": "tex2jax_ignore|mathjax_ignore|document", "processHtmlClass": "tex2jax_process|mathjax_process|math|output_area"}}</script>
     <script defer="defer" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
@@ -258,10 +257,11 @@ div.nboutput.container div.prompt > div {
     }
 }
 
-/* disable scrollbars on prompts */
+/* disable scrollbars and line breaks on prompts */
 div.nbinput.container div.prompt pre,
 div.nboutput.container div.prompt pre {
     overflow: hidden;
+    white-space: pre;
 }
 
 /* input/output area */
@@ -363,6 +363,7 @@ div.nboutput.container div.output_area > div[class^='highlight']{
 }
 
 /* Some additional styling taken form the Jupyter notebook CSS */
+.jp-RenderedHTMLCommon table,
 div.rendered_html table {
   border: none;
   border-collapse: collapse;
@@ -371,10 +372,14 @@ div.rendered_html table {
   font-size: 12px;
   table-layout: fixed;
 }
+.jp-RenderedHTMLCommon thead,
 div.rendered_html thead {
   border-bottom: 1px solid black;
   vertical-align: bottom;
 }
+.jp-RenderedHTMLCommon tr,
+.jp-RenderedHTMLCommon th,
+.jp-RenderedHTMLCommon td,
 div.rendered_html tr,
 div.rendered_html th,
 div.rendered_html td {
@@ -386,29 +391,32 @@ div.rendered_html td {
   max-width: none;
   border: none;
 }
+.jp-RenderedHTMLCommon th,
 div.rendered_html th {
   font-weight: bold;
 }
+.jp-RenderedHTMLCommon tbody tr:nth-child(odd),
 div.rendered_html tbody tr:nth-child(odd) {
   background: #f5f5f5;
 }
+.jp-RenderedHTMLCommon tbody tr:hover,
 div.rendered_html tbody tr:hover {
   background: rgba(66, 165, 245, 0.2);
 }
 </style>
 <section id="Pricing-Exploratory-Data-Analysis">
-<h1>Pricing Exploratory Data Analysis<a class="headerlink" href="#Pricing-Exploratory-Data-Analysis" title="Permalink to this headline">¶</a></h1>
+<h1>Pricing Exploratory Data Analysis<a class="headerlink" href="#Pricing-Exploratory-Data-Analysis" title="Permalink to this heading">¶</a></h1>
 <section id="Client-request">
-<h2>Client request<a class="headerlink" href="#Client-request" title="Permalink to this headline">¶</a></h2>
+<h2>Client request<a class="headerlink" href="#Client-request" title="Permalink to this heading">¶</a></h2>
 <p>Here is an excel file with 2 data sets. This is actual data.</p>
 <p>The first data set is a standard correlation where the baseline and benchmark show a strong correlation according to my simple method The second data set is an example where the correlation is good, until it is not for a period of 12 months or so, before the lines come back together. This was caused by a disruption by a fire at one supplier after which capacity was limited and the link between market pricing and cost driver pricing was no longer relevant</p>
 <p>Some notes The 2 data sets which I am running my analysis on are shaded in blue. I have added the formulas so you can see how they are calculated from the underlying data sets. Some of the data preparation (averaging, adjusting for lag, FX conversion) is not visible in this file but it is not so relevant for the statistics.</p>
 <p><strong>I would love to know if there is a better way to:</strong> - Understand or analyse the correlation between the 2 main lines - Understand the correlation between the base line and each of the individual cost drivers so that the cost drivers could be ranked in terms of relevance in some way</p>
 <p>I am available to answer any questions about this data.</p>
 <section id="Read-in-necessary-packages">
-<h3>Read in necessary packages<a class="headerlink" href="#Read-in-necessary-packages" title="Permalink to this headline">¶</a></h3>
-<div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
+<h3>Read in necessary packages<a class="headerlink" href="#Read-in-necessary-packages" title="Permalink to this heading">¶</a></h3>
+<div class="nbinput docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[1]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span> <span class="nn">pandas</span> <span class="k">as</span> <span class="nn">pd</span>
@@ -430,8 +438,28 @@ div.rendered_html tbody tr:hover {
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<div class="highlight"><pre>
+Importing the dtw module. When using in academic works please cite:
+  T. Giorgino. Computing and Visualizing Dynamic Time Warping Alignments in R: The dtw Package.
+  J. Stat. Soft., doi:10.18637/jss.v031.i07.
+
+</pre></div></div>
+</div>
+<div class="nboutput nblast docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+/Users/james/miniconda3/envs/ds_env/lib/python3.9/site-packages/tqdm/auto.py:22: TqdmWarning: IProgress not found. Please update jupyter and ipywidgets. See https://ipywidgets.readthedocs.io/en/stable/user_install.html
+  from .autonotebook import tqdm as notebook_tqdm
+</pre></div></div>
+</div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[2]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">shap</span><span class="o">.</span><span class="n">initjs</span><span class="p">()</span>
@@ -476,9 +504,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Set-plotting-style">
-<h3>Set plotting style<a class="headerlink" href="#Set-plotting-style" title="Permalink to this headline">¶</a></h3>
+<h3>Set plotting style<a class="headerlink" href="#Set-plotting-style" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[3]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="s2">&quot;jms_style_sheet&quot;</span> <span class="ow">in</span> <span class="n">plt</span><span class="o">.</span><span class="n">style</span><span class="o">.</span><span class="n">available</span><span class="p">:</span>
@@ -488,13 +516,13 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Read-in-data-frames">
-<h3>Read in data frames<a class="headerlink" href="#Read-in-data-frames" title="Permalink to this headline">¶</a></h3>
+<h3>Read in data frames<a class="headerlink" href="#Read-in-data-frames" title="Permalink to this heading">¶</a></h3>
 <p>Either the tab that has a clear correlation or not</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[4]:
 </pre></div>
 </div>
-<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_choice</span> <span class="o">=</span> <span class="s2">&quot;unclear_result&quot;</span>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df_choice</span> <span class="o">=</span> <span class="s2">&quot;clear_result&quot;</span>
 <span class="k">if</span> <span class="n">df_choice</span> <span class="o">==</span> <span class="s2">&quot;clear_result&quot;</span><span class="p">:</span>
     <span class="n">df</span> <span class="o">=</span> <span class="p">(</span><span class="n">pd</span><span class="o">.</span><span class="n">read_excel</span><span class="p">(</span><span class="s2">&quot;data/Input for statistics v1.xlsx&quot;</span><span class="p">,</span> <span class="n">sheet_name</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
         <span class="o">.</span><span class="n">assign</span><span class="p">(</span><span class="o">**</span><span class="p">{</span><span class="s2">&quot;Date&quot;</span><span class="p">:</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">:</span> <span class="n">pd</span><span class="o">.</span><span class="n">to_datetime</span><span class="p">(</span><span class="n">x</span><span class="p">[</span><span class="s2">&quot;Date&quot;</span><span class="p">])</span><span class="o">.</span><span class="n">dt</span><span class="o">.</span><span class="n">date</span><span class="p">})</span>
@@ -512,9 +540,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Show-the-head-of-the-data-frame">
-<h3>Show the head of the data frame<a class="headerlink" href="#Show-the-head-of-the-data-frame" title="Permalink to this headline">¶</a></h3>
+<h3>Show the head of the data frame<a class="headerlink" href="#Show-the-head-of-the-data-frame" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">head</span><span class="p">()</span>
@@ -522,7 +550,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[5]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -547,9 +575,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
       <th>Baseline</th>
       <th>Weighted benchmark</th>
       <th>Benchmark index</th>
-      <th>Chlorine</th>
-      <th>Benzene</th>
-      <th>Aluminium</th>
+      <th>EHA</th>
+      <th>Acrylic Acid</th>
+      <th>Styrene</th>
     </tr>
     <tr>
       <th>Date</th>
@@ -563,49 +591,49 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
   </thead>
   <tbody>
     <tr>
-      <th>2017-04-01</th>
-      <td>1.068</td>
-      <td>1.06685</td>
-      <td>1.121545</td>
-      <td>1.099</td>
-      <td>1.013</td>
-      <td>1.239</td>
+      <th>2018-01-01</th>
+      <td>1.026</td>
+      <td>0.98710</td>
+      <td>0.97850</td>
+      <td>0.945</td>
+      <td>1.111</td>
+      <td>0.929</td>
     </tr>
     <tr>
-      <th>2017-05-01</th>
-      <td>1.087</td>
-      <td>1.07005</td>
-      <td>1.127364</td>
-      <td>1.099</td>
+      <th>2018-02-01</th>
+      <td>1.015</td>
+      <td>0.99460</td>
+      <td>0.99100</td>
+      <td>0.974</td>
+      <td>1.104</td>
+      <td>0.943</td>
+    </tr>
+    <tr>
+      <th>2018-03-01</th>
       <td>1.006</td>
-      <td>1.265</td>
+      <td>0.97930</td>
+      <td>0.96550</td>
+      <td>0.952</td>
+      <td>1.004</td>
+      <td>0.953</td>
     </tr>
     <tr>
-      <th>2017-06-01</th>
-      <td>1.087</td>
-      <td>1.07815</td>
-      <td>1.142091</td>
-      <td>1.099</td>
-      <td>1.087</td>
-      <td>1.265</td>
+      <th>2018-04-01</th>
+      <td>1.007</td>
+      <td>0.97780</td>
+      <td>0.96300</td>
+      <td>0.906</td>
+      <td>1.016</td>
+      <td>0.965</td>
     </tr>
     <tr>
-      <th>2017-07-01</th>
-      <td>1.087</td>
-      <td>1.07765</td>
-      <td>1.141182</td>
-      <td>1.093</td>
-      <td>1.142</td>
-      <td>1.237</td>
-    </tr>
-    <tr>
-      <th>2017-08-01</th>
-      <td>1.087</td>
-      <td>1.07565</td>
-      <td>1.137545</td>
-      <td>1.069</td>
-      <td>1.188</td>
-      <td>1.241</td>
+      <th>2018-05-01</th>
+      <td>1.012</td>
+      <td>0.97375</td>
+      <td>0.95625</td>
+      <td>0.900</td>
+      <td>1.049</td>
+      <td>0.938</td>
     </tr>
   </tbody>
 </table>
@@ -613,9 +641,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Define-the-target-and-display-simple-summary-statistics-of-the-columns">
-<h3>Define the target and display simple summary statistics of the columns<a class="headerlink" href="#Define-the-target-and-display-simple-summary-statistics-of-the-columns" title="Permalink to this headline">¶</a></h3>
+<h3>Define the target and display simple summary statistics of the columns<a class="headerlink" href="#Define-the-target-and-display-simple-summary-statistics-of-the-columns" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[6]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">target</span> <span class="o">=</span> <span class="s2">&quot;Baseline&quot;</span>
@@ -623,7 +651,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -631,7 +659,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[7]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -656,83 +684,83 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
       <th>Baseline</th>
       <th>Weighted benchmark</th>
       <th>Benchmark index</th>
-      <th>Chlorine</th>
-      <th>Benzene</th>
-      <th>Aluminium</th>
+      <th>EHA</th>
+      <th>Acrylic Acid</th>
+      <th>Styrene</th>
     </tr>
   </thead>
   <tbody>
     <tr>
       <th>count</th>
-      <td>60.000000</td>
-      <td>60.000000</td>
-      <td>60.000000</td>
-      <td>60.000000</td>
-      <td>60.000000</td>
-      <td>60.000000</td>
+      <td>56.000000</td>
+      <td>56.000000</td>
+      <td>56.000000</td>
+      <td>56.000000</td>
+      <td>56.000000</td>
+      <td>56.000000</td>
     </tr>
     <tr>
       <th>mean</th>
-      <td>1.070700</td>
-      <td>1.032053</td>
-      <td>1.058279</td>
-      <td>1.031233</td>
-      <td>1.062683</td>
-      <td>1.109433</td>
+      <td>1.012518</td>
+      <td>0.999170</td>
+      <td>0.998616</td>
+      <td>1.139804</td>
+      <td>1.123946</td>
+      <td>0.865357</td>
     </tr>
     <tr>
       <th>std</th>
-      <td>0.043434</td>
-      <td>0.038837</td>
-      <td>0.070612</td>
-      <td>0.084605</td>
-      <td>0.093602</td>
-      <td>0.102285</td>
+      <td>0.099634</td>
+      <td>0.113010</td>
+      <td>0.188350</td>
+      <td>0.264228</td>
+      <td>0.219361</td>
+      <td>0.183202</td>
     </tr>
     <tr>
       <th>min</th>
-      <td>0.997000</td>
-      <td>0.952650</td>
-      <td>0.913909</td>
-      <td>0.894000</td>
-      <td>0.787000</td>
-      <td>0.863000</td>
+      <td>0.862000</td>
+      <td>0.825250</td>
+      <td>0.708750</td>
+      <td>0.846000</td>
+      <td>0.846000</td>
+      <td>0.499000</td>
     </tr>
     <tr>
       <th>25%</th>
-      <td>1.039250</td>
-      <td>1.006787</td>
-      <td>1.012341</td>
-      <td>0.985000</td>
-      <td>1.004500</td>
-      <td>1.037500</td>
+      <td>0.944750</td>
+      <td>0.937937</td>
+      <td>0.896562</td>
+      <td>0.935000</td>
+      <td>0.983750</td>
+      <td>0.770250</td>
     </tr>
     <tr>
       <th>50%</th>
-      <td>1.066500</td>
-      <td>1.038575</td>
-      <td>1.070136</td>
-      <td>1.029000</td>
-      <td>1.088500</td>
-      <td>1.135500</td>
+      <td>1.002500</td>
+      <td>0.980200</td>
+      <td>0.967000</td>
+      <td>1.030500</td>
+      <td>1.064000</td>
+      <td>0.933500</td>
     </tr>
     <tr>
       <th>75%</th>
-      <td>1.087000</td>
-      <td>1.050563</td>
-      <td>1.091932</td>
-      <td>1.064000</td>
-      <td>1.121750</td>
-      <td>1.194000</td>
+      <td>1.056250</td>
+      <td>1.055350</td>
+      <td>1.092250</td>
+      <td>1.360500</td>
+      <td>1.174500</td>
+      <td>1.003000</td>
     </tr>
     <tr>
       <th>max</th>
-      <td>1.160000</td>
-      <td>1.143200</td>
-      <td>1.260364</td>
-      <td>1.371000</td>
-      <td>1.216000</td>
-      <td>1.265000</td>
+      <td>1.176000</td>
+      <td>1.208800</td>
+      <td>1.348000</td>
+      <td>1.664000</td>
+      <td>1.624000</td>
+      <td>1.193000</td>
     </tr>
   </tbody>
 </table>
@@ -741,9 +769,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </section>
 </section>
 <section id="Plot-the-amount-of-rows-in-the-target">
-<h2>Plot the amount of rows in the target<a class="headerlink" href="#Plot-the-amount-of-rows-in-the-target" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the amount of rows in the target<a class="headerlink" href="#Plot-the-amount-of-rows-in-the-target" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[8]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">15</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -761,9 +789,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Plot-the-heatmaps-of-the-raw-and-scaled-data">
-<h2>Plot the heatmaps of the raw and scaled data<a class="headerlink" href="#Plot-the-heatmaps-of-the-raw-and-scaled-data" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the heatmaps of the raw and scaled data<a class="headerlink" href="#Plot-the-heatmaps-of-the-raw-and-scaled-data" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[9]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -782,7 +810,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[10]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -802,9 +830,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Plot-the-correlation-of-all-of-the-different-time-series-with-each-other">
-<h2>Plot the correlation of all of the different time series with each other<a class="headerlink" href="#Plot-the-correlation-of-all-of-the-different-time-series-with-each-other" title="Permalink to this headline">¶</a></h2>
+<h2>Plot the correlation of all of the different time series with each other<a class="headerlink" href="#Plot-the-correlation-of-all-of-the-different-time-series-with-each-other" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[11]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">7</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -820,9 +848,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <section id="Plot-the-scatterplot-of-the-variables-to-look-for-general-(non-time-series-related)-trends">
-<h3>Plot the scatterplot of the variables to look for general (non time series related) trends<a class="headerlink" href="#Plot-the-scatterplot-of-the-variables-to-look-for-general-(non-time-series-related)-trends" title="Permalink to this headline">¶</a></h3>
+<h3>Plot the scatterplot of the variables to look for general (non time series related) trends<a class="headerlink" href="#Plot-the-scatterplot-of-the-variables-to-look-for-general-(non-time-series-related)-trends" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[12]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span> <span class="mi">4</span><span class="p">))</span>
@@ -846,9 +874,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </section>
 </section>
 <section id="Plot-all-of-the-features-over-time">
-<h2>Plot all of the features over time<a class="headerlink" href="#Plot-all-of-the-features-over-time" title="Permalink to this headline">¶</a></h2>
+<h2>Plot all of the features over time<a class="headerlink" href="#Plot-all-of-the-features-over-time" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[13]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span> <span class="mi">5</span><span class="p">))</span>
@@ -880,9 +908,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Threeway-plot">
-<h2>Threeway plot<a class="headerlink" href="#Threeway-plot" title="Permalink to this headline">¶</a></h2>
+<h2>Threeway plot<a class="headerlink" href="#Threeway-plot" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[14]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feature_1</span> <span class="o">=</span> <span class="s2">&quot;Baseline&quot;</span>
@@ -910,9 +938,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Twoway-plot">
-<h2>Twoway plot<a class="headerlink" href="#Twoway-plot" title="Permalink to this headline">¶</a></h2>
+<h2>Twoway plot<a class="headerlink" href="#Twoway-plot" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[15]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">alignment</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;twoway&quot;</span><span class="p">)</span>
@@ -928,9 +956,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Twoway-plot-with-rabiner-Juang-Step-Pattern-to-align-the-time-series">
-<h2>Twoway plot with rabiner Juang Step Pattern to align the time series<a class="headerlink" href="#Twoway-plot-with-rabiner-Juang-Step-Pattern-to-align-the-time-series" title="Permalink to this headline">¶</a></h2>
+<h2>Twoway plot with rabiner Juang Step Pattern to align the time series<a class="headerlink" href="#Twoway-plot-with-rabiner-Juang-Step-Pattern-to-align-the-time-series" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[16]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Align and plot with the Rabiner-Juang type VI-c unsmoothed recursion</span>
@@ -949,9 +977,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Threeway-plot-with-cumulative-cost-density-with-the-warping-path-overimposed">
-<h2>Threeway plot with cumulative cost density with the warping path overimposed<a class="headerlink" href="#Threeway-plot-with-cumulative-cost-density-with-the-warping-path-overimposed" title="Permalink to this headline">¶</a></h2>
+<h2>Threeway plot with cumulative cost density with the warping path overimposed<a class="headerlink" href="#Threeway-plot-with-cumulative-cost-density-with-the-warping-path-overimposed" title="Permalink to this heading">¶</a></h2>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[17]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">alignment</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="nb">type</span><span class="o">=</span><span class="s2">&quot;density&quot;</span><span class="p">,</span> <span class="n">xlab</span><span class="o">=</span><span class="n">feature_1</span><span class="p">,</span>
@@ -967,7 +995,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[18]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># _ = sns.heatmap(alignment.directionMatrix[1:, 1:])</span>
@@ -975,7 +1003,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[19]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># _ = sns.heatmap(alignment.localCostMatrix)</span>
@@ -983,9 +1011,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <section id="Plot-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments">
-<h3>Plot the descriptive statistics of the localCostMatrix to allow comparison of alignments<a class="headerlink" href="#Plot-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments" title="Permalink to this headline">¶</a></h3>
+<h3>Plot the descriptive statistics of the localCostMatrix to allow comparison of alignments<a class="headerlink" href="#Plot-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[20]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LCM_df</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">DataFrame</span><span class="p">(</span><span class="n">alignment</span><span class="o">.</span><span class="n">localCostMatrix</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">),</span> <span class="n">columns</span><span class="o">=</span><span class="p">[</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">feature_1</span><span class="si">}</span><span class="s2">_</span><span class="si">{</span><span class="n">feature_2</span><span class="si">}</span><span class="s2">_LCM&quot;</span><span class="p">])</span>
@@ -995,18 +1023,26 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+Setting a gradient palette using color= is deprecated and will be removed in version 0.13. Set `palette=&#39;dark:#fcdd14&#39;` for same effect.
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_EDA_37_0.png" src="_images/pricing_EDA_37_0.png" />
+<img alt="_images/pricing_EDA_37_1.png" src="_images/pricing_EDA_37_1.png" />
 </div>
 </div>
 </section>
 <section id="Show-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments">
-<h3>Show the descriptive statistics of the localCostMatrix to allow comparison of alignments<a class="headerlink" href="#Show-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments" title="Permalink to this headline">¶</a></h3>
+<h3>Show the descriptive statistics of the localCostMatrix to allow comparison of alignments<a class="headerlink" href="#Show-the-descriptive-statistics-of-the-localCostMatrix-to-allow-comparison-of-alignments" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">LCM_df</span><span class="o">.</span><span class="n">describe</span><span class="p">()</span>
@@ -1014,7 +1050,7 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[21]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1042,15 +1078,15 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
   <tbody>
     <tr>
       <th>count</th>
-      <td>3600.000000</td>
+      <td>3136.000000</td>
     </tr>
     <tr>
       <th>mean</th>
-      <td>0.054544</td>
+      <td>0.118301</td>
     </tr>
     <tr>
       <th>std</th>
-      <td>0.043096</td>
+      <td>0.092079</td>
     </tr>
     <tr>
       <th>min</th>
@@ -1058,19 +1094,19 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
     </tr>
     <tr>
       <th>25%</th>
-      <td>0.019737</td>
+      <td>0.034038</td>
     </tr>
     <tr>
       <th>50%</th>
-      <td>0.043350</td>
+      <td>0.101250</td>
     </tr>
     <tr>
       <th>75%</th>
-      <td>0.081025</td>
+      <td>0.182950</td>
     </tr>
     <tr>
       <th>max</th>
-      <td>0.207350</td>
+      <td>0.350750</td>
     </tr>
   </tbody>
 </table>
@@ -1078,9 +1114,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Show-the-minimum-global-distance-computed,-not-normalized.">
-<h3>Show the minimum global distance computed, not normalized.<a class="headerlink" href="#Show-the-minimum-global-distance-computed,-not-normalized." title="Permalink to this headline">¶</a></h3>
+<h3>Show the minimum global distance computed, not normalized.<a class="headerlink" href="#Show-the-minimum-global-distance-computed,-not-normalized." title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alignment</span><span class="o">.</span><span class="n">distance</span>
@@ -1088,19 +1124,19 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[22]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.9582500000000015
+1.1479
 </pre></div></div>
 </div>
 </section>
 <section id="Show-the-distance-computed,-normalized-for-path-length">
-<h3>Show the distance computed, normalized for path length<a class="headerlink" href="#Show-the-distance-computed,-normalized-for-path-length" title="Permalink to this headline">¶</a></h3>
+<h3>Show the distance computed, normalized for path length<a class="headerlink" href="#Show-the-distance-computed,-normalized-for-path-length" title="Permalink to this heading">¶</a></h3>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">alignment</span><span class="o">.</span><span class="n">normalizedDistance</span>
@@ -1108,20 +1144,20 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[23]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-0.007985416666666679
+0.010249107142857141
 </pre></div></div>
 </div>
 <section id="Run-a-regression">
-<h4>Run a regression<a class="headerlink" href="#Run-a-regression" title="Permalink to this headline">¶</a></h4>
+<h4>Run a regression<a class="headerlink" href="#Run-a-regression" title="Permalink to this heading">¶</a></h4>
 <section id="Split-the-data-frame-to-predictors-data-frame-and-target-series">
-<h5>Split the data frame to predictors data frame and target series<a class="headerlink" href="#Split-the-data-frame-to-predictors-data-frame-and-target-series" title="Permalink to this headline">¶</a></h5>
+<h5>Split the data frame to predictors data frame and target series<a class="headerlink" href="#Split-the-data-frame-to-predictors-data-frame-and-target-series" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="o">.</span><span class="n">drop</span><span class="p">(</span><span class="n">target</span><span class="p">,</span><span class="n">axis</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1132,19 +1168,19 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[24]:
 </pre></div>
 </div>
 <div class="output_area docutils container">
 <div class="highlight"><pre>
-((60, 5), (60,))
+((56, 5), (56,))
 </pre></div></div>
 </div>
 </section>
 <section id="Define-the-model">
-<h5>Define the model<a class="headerlink" href="#Define-the-model" title="Permalink to this headline">¶</a></h5>
+<h5>Define the model<a class="headerlink" href="#Define-the-model" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[25]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">mod</span> <span class="o">=</span> <span class="n">RandomForestRegressor</span><span class="p">(</span><span class="n">random_state</span><span class="o">=</span><span class="mi">42</span><span class="p">)</span>
@@ -1154,9 +1190,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Fit-the-model-to-the-whole-data-set-and-“predict”-the-target-(there-is-no-train-test-or-cross-validation-here)">
-<h5>Fit the model to the whole data set and “predict” the target (there is no train test or cross-validation here)<a class="headerlink" href="#Fit-the-model-to-the-whole-data-set-and-“predict”-the-target-(there-is-no-train-test-or-cross-validation-here)" title="Permalink to this headline">¶</a></h5>
+<h5>Fit the model to the whole data set and “predict” the target (there is no train test or cross-validation here)<a class="headerlink" href="#Fit-the-model-to-the-whole-data-set-and-“predict”-the-target-(there-is-no-train-test-or-cross-validation-here)" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[26]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">mod</span><span class="o">.</span><span class="n">fit</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">y</span><span class="p">)</span>
@@ -1167,9 +1203,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Use-SHAP-values-to-show-feature-importance-in-the-model">
-<h5>Use SHAP values to show feature importance in the model<a class="headerlink" href="#Use-SHAP-values-to-show-feature-importance-in-the-model" title="Permalink to this headline">¶</a></h5>
+<h5>Use SHAP values to show feature importance in the model<a class="headerlink" href="#Use-SHAP-values-to-show-feature-importance-in-the-model" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[27]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="n">mod</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span> <span class="o">!=</span> <span class="s2">&quot;LinearRegression&quot;</span><span class="p">:</span>
@@ -1179,18 +1215,26 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </pre></div>
 </div>
 </div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+No data for colormapping provided via &#39;c&#39;. Parameters &#39;vmin&#39;, &#39;vmax&#39; will be ignored
+</pre></div></div>
+</div>
 <div class="nboutput nblast docutils container">
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_EDA_52_0.png" src="_images/pricing_EDA_52_0.png" />
+<img alt="_images/pricing_EDA_52_1.png" src="_images/pricing_EDA_52_1.png" />
 </div>
 </div>
 </section>
 <section id="Use-gini-importance-values-to-show-feature-importance-in-the-model">
-<h5>Use gini importance values to show feature importance in the model<a class="headerlink" href="#Use-gini-importance-values-to-show-feature-importance-in-the-model" title="Permalink to this headline">¶</a></h5>
+<h5>Use gini importance values to show feature importance in the model<a class="headerlink" href="#Use-gini-importance-values-to-show-feature-importance-in-the-model" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[28]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">feature_importance</span> <span class="o">=</span> <span class="n">pd</span><span class="o">.</span><span class="n">Series</span><span class="p">(</span><span class="nb">dict</span><span class="p">(</span><span class="nb">zip</span><span class="p">(</span><span class="n">X</span><span class="o">.</span><span class="n">columns</span><span class="p">,</span> <span class="n">mod</span><span class="o">.</span><span class="n">feature_importances_</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">2</span><span class="p">))))</span>
@@ -1214,9 +1258,9 @@ n===t._wrapperState.initialValue&&(e.value=n)}});t.exports=l},function(t,e,n){"u
 </div>
 </section>
 <section id="Show-the-correlation-of-the-fitted-vs-the-real-target">
-<h5>Show the correlation of the fitted vs the real target<a class="headerlink" href="#Show-the-correlation-of-the-fitted-vs-the-real-target" title="Permalink to this headline">¶</a></h5>
+<h5>Show the correlation of the fitted vs the real target<a class="headerlink" href="#Show-the-correlation-of-the-fitted-vs-the-real-target" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">dict_results</span> <span class="o">=</span> <span class="n">correlation_analysis</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
@@ -1246,7 +1290,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </pre></div></div>
 </div>
 <div class="nboutput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[29]:
 </pre></div>
 </div>
 <div class="output_area rendered_html docutils container">
@@ -1280,13 +1324,13 @@ The frame.append method is deprecated and will be removed from pandas in a futur
   <tbody>
     <tr>
       <th>0</th>
-      <td>Pearson</td>
+      <td>Spearman Rank</td>
       <td>y_pred</td>
       <td>Baseline</td>
-      <td>0.964303</td>
-      <td>3.655245e-35</td>
+      <td>0.993958</td>
+      <td>1.658809e-53</td>
       <td>True</td>
-      <td>60</td>
+      <td>56</td>
     </tr>
   </tbody>
 </table>
@@ -1294,9 +1338,9 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 </section>
 <section id="Plot-the-linear-relationship-between-the-fitted-vs-the-real-target">
-<h5>Plot the linear relationship between the fitted vs the real target<a class="headerlink" href="#Plot-the-linear-relationship-between-the-fitted-vs-the-real-target" title="Permalink to this headline">¶</a></h5>
+<h5>Plot the linear relationship between the fitted vs the real target<a class="headerlink" href="#Plot-the-linear-relationship-between-the-fitted-vs-the-real-target" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[30]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">_</span> <span class="o">=</span> <span class="n">sns</span><span class="o">.</span><span class="n">lmplot</span><span class="p">(</span><span class="n">data</span><span class="o">=</span><span class="n">df_test</span><span class="p">,</span>
@@ -1315,7 +1359,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 </div>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[31]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># import sklearn</span>
@@ -1325,9 +1369,9 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 </section>
 <section id="Plot-the-learning-curve-of-the-model---seems-like-it-is-not-converging---likely-it-is-overfitting-(also-sample-size-is-small)">
-<h5>Plot the learning curve of the model - seems like it is not converging - likely it is overfitting (also sample size is small)<a class="headerlink" href="#Plot-the-learning-curve-of-the-model---seems-like-it-is-not-converging---likely-it-is-overfitting-(also-sample-size-is-small)" title="Permalink to this headline">¶</a></h5>
+<h5>Plot the learning curve of the model - seems like it is not converging - likely it is overfitting (also sample size is small)<a class="headerlink" href="#Plot-the-learning-curve-of-the-model---seems-like-it-is-not-converging---likely-it-is-overfitting-(also-sample-size-is-small)" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[36]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[32]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_learning_curve</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">mod</span><span class="p">,</span>
@@ -1355,11 +1399,11 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 </section>
 <section id="Run-some-cross-validations-(fit-in-train,-predict-in-test)">
-<h5>Run some cross validations (fit in train, predict in test)<a class="headerlink" href="#Run-some-cross-validations-(fit-in-train,-predict-in-test)" title="Permalink to this headline">¶</a></h5>
+<h5>Run some cross validations (fit in train, predict in test)<a class="headerlink" href="#Run-some-cross-validations-(fit-in-train,-predict-in-test)" title="Permalink to this heading">¶</a></h5>
 <p>Plot the difference between real and precited and the correlation between real and predicted</p>
 <p>Redefine X to just use the top feature (in an attempt to stop overfitting)</p>
 <div class="nbinput nblast docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[37]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[33]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">X</span> <span class="o">=</span> <span class="n">df</span><span class="p">[[</span><span class="n">feature_importance_df</span><span class="o">.</span><span class="n">loc</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span> <span class="s2">&quot;feature&quot;</span><span class="p">]]]</span>
@@ -1367,7 +1411,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 </div>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[38]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[34]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">kfold</span> <span class="o">=</span> <span class="n">KFold</span><span class="p">(</span><span class="n">n_splits</span><span class="o">=</span><span class="mi">2</span><span class="p">,</span> <span class="n">shuffle</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">random_state</span><span class="o">=</span><span class="mi">1</span><span class="p">)</span>
@@ -1387,7 +1431,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
     <span class="n">user_ids_last</span> <span class="o">=</span> <span class="n">df_test</span><span class="o">.</span><span class="n">tail</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="o">.</span><span class="n">index</span><span class="o">.</span><span class="n">tolist</span><span class="p">()[</span><span class="mi">0</span><span class="p">]</span>
 
     <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">20</span><span class="p">,</span><span class="mi">5</span><span class="p">))</span>
-    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> (test set) | RMSE = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> | bias Error = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">]),</span> <span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+    <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;</span><span class="si">{</span><span class="n">mod</span><span class="o">.</span><span class="vm">__class__</span><span class="o">.</span><span class="vm">__name__</span><span class="si">}</span><span class="s2"> (test set) | RMSE = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span><span class="w"> </span><span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2"> | bias Error = </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">mean</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span><span class="w"> </span><span class="o">-</span><span class="w"> </span><span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">]),</span><span class="w"> </span><span class="mi">4</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
     <span class="n">rmse_plot</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">stem</span><span class="p">(</span><span class="n">df_test</span><span class="o">.</span><span class="n">index</span><span class="p">,</span> <span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">]</span> <span class="o">-</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">],</span> <span class="n">use_line_collection</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">linefmt</span><span class="o">=</span><span class="s1">&#39;grey&#39;</span><span class="p">,</span> <span class="n">markerfmt</span><span class="o">=</span><span class="s1">&#39;D&#39;</span><span class="p">)</span>
     <span class="n">_</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">hlines</span><span class="p">(</span><span class="n">y</span><span class="o">=</span><span class="nb">round</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">sqrt</span><span class="p">(</span><span class="n">mean_squared_error</span><span class="p">(</span><span class="n">df_test</span><span class="p">[</span><span class="s1">&#39;y_pred&#39;</span><span class="p">],</span> <span class="n">df_test</span><span class="p">[</span><span class="n">target</span><span class="p">])),</span><span class="mi">2</span><span class="p">),</span> <span class="n">colors</span><span class="o">=</span><span class="s1">&#39;b&#39;</span><span class="p">,</span> <span class="n">linestyles</span><span class="o">=</span><span class="s1">&#39;-.&#39;</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="s1">&#39;+ RMSE&#39;</span><span class="p">,</span>
                     <span class="n">xmin</span> <span class="o">=</span> <span class="n">user_ids_first</span><span class="p">,</span>
@@ -1430,8 +1474,16 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
 </div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
+The &#39;use_line_collection&#39; parameter of stem() was deprecated in Matplotlib 3.6 and will be removed two minor releases later. If any parameter follows &#39;use_line_collection&#39;, they should be passed as keyword, not positionally.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_EDA_65_0.png" src="_images/pricing_EDA_65_0.png" />
+<img alt="_images/pricing_EDA_65_1.png" src="_images/pricing_EDA_65_1.png" />
 </div>
 </div>
 <div class="nboutput docutils container">
@@ -1476,24 +1528,17 @@ The frame.append method is deprecated and will be removed from pandas in a futur
   <tbody>
     <tr>
       <th>0</th>
-      <td>Pearson</td>
+      <td>Spearman Rank</td>
       <td>y_pred</td>
       <td>Baseline</td>
-      <td>0.478995</td>
-      <td>0.007407</td>
+      <td>0.698887</td>
+      <td>0.000035</td>
       <td>True</td>
-      <td>30</td>
+      <td>28</td>
     </tr>
   </tbody>
 </table>
 </div></div>
-</div>
-<div class="nboutput docutils container">
-<div class="prompt empty docutils container">
-</div>
-<div class="output_area docutils container">
-<img alt="_images/pricing_EDA_65_3.png" src="_images/pricing_EDA_65_3.png" />
-</div>
 </div>
 <div class="nboutput docutils container">
 <div class="prompt empty docutils container">
@@ -1507,6 +1552,21 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 <div class="output_area stderr docutils container">
 <div class="highlight"><pre>
+The &#39;use_line_collection&#39; parameter of stem() was deprecated in Matplotlib 3.6 and will be removed two minor releases later. If any parameter follows &#39;use_line_collection&#39;, they should be passed as keyword, not positionally.
+</pre></div></div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area docutils container">
+<img alt="_images/pricing_EDA_65_6.png" src="_images/pricing_EDA_65_6.png" />
+</div>
+</div>
+<div class="nboutput docutils container">
+<div class="prompt empty docutils container">
+</div>
+<div class="output_area stderr docutils container">
+<div class="highlight"><pre>
 The frame.append method is deprecated and will be removed from pandas in a future version. Use pandas.concat instead.
 </pre></div></div>
 </div>
@@ -1544,13 +1604,13 @@ The frame.append method is deprecated and will be removed from pandas in a futur
   <tbody>
     <tr>
       <th>0</th>
-      <td>Pearson</td>
+      <td>Spearman Rank</td>
       <td>y_pred</td>
       <td>Baseline</td>
-      <td>0.655749</td>
-      <td>0.000084</td>
+      <td>0.493671</td>
+      <td>0.007591</td>
       <td>True</td>
-      <td>30</td>
+      <td>28</td>
     </tr>
   </tbody>
 </table>
@@ -1560,14 +1620,14 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 <div class="prompt empty docutils container">
 </div>
 <div class="output_area docutils container">
-<img alt="_images/pricing_EDA_65_7.png" src="_images/pricing_EDA_65_7.png" />
+<img alt="_images/pricing_EDA_65_9.png" src="_images/pricing_EDA_65_9.png" />
 </div>
 </div>
 </section>
 <section id="Plot-the-learning-curve-of-the-model---it-is-a-bit-better-than-before-but-still-likely-overfitting">
-<h5>Plot the learning curve of the model - it is a bit better than before but still likely overfitting<a class="headerlink" href="#Plot-the-learning-curve-of-the-model---it-is-a-bit-better-than-before-but-still-likely-overfitting" title="Permalink to this headline">¶</a></h5>
+<h5>Plot the learning curve of the model - it is a bit better than before but still likely overfitting<a class="headerlink" href="#Plot-the-learning-curve-of-the-model---it-is-a-bit-better-than-before-but-still-likely-overfitting" title="Permalink to this heading">¶</a></h5>
 <div class="nbinput docutils container">
-<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[39]:
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[35]:
 </pre></div>
 </div>
 <div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plot_learning_curve</span><span class="p">(</span><span class="n">estimator</span><span class="o">=</span><span class="n">mod</span><span class="p">,</span>
@@ -1591,6 +1651,14 @@ The frame.append method is deprecated and will be removed from pandas in a futur
 </div>
 <div class="output_area docutils container">
 <img alt="_images/pricing_EDA_67_0.png" src="_images/pricing_EDA_67_0.png" />
+</div>
+</div>
+<div class="nbinput nblast docutils container">
+<div class="prompt highlight-none notranslate"><div class="highlight"><pre><span></span>[ ]:
+</pre></div>
+</div>
+<div class="input_area highlight-ipython3 notranslate"><div class="highlight"><pre><span></span>
+</pre></div>
 </div>
 </div>
 </section>
@@ -1619,7 +1687,7 @@ The frame.append method is deprecated and will be removed from pandas in a futur
     </p>
     <p>
         &copy; Copyright 2022, James Twose.<br/>
-      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 4.5.0.<br/>
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 6.1.3.<br/>
     </p>
   </div>
 </footer>
