@@ -30,7 +30,6 @@ if check_password():
             )
         return df
 
-
     # CREATE ANALYSIS CACHE FUNCTION
     @st.cache_data(ttl=3600)
     def get_analysis_output(df, outcome, feature_list):
@@ -38,7 +37,6 @@ if check_password():
             data=df, outcome=outcome, feature_list=feature_list
         )
         return df_pred_test, shap_df, gini_df
-
 
     df = get_data()
 
@@ -49,8 +47,7 @@ if check_password():
     )
 
     # READ DATA
-    df_selection = df
-    feature_list = df_selection.drop(columns=[outcome]).columns.tolist()
+    feature_list = df.drop(columns=[outcome]).columns.tolist()
 
     # RUN MAIN ANALYSIS
     df_pred_test, shap_df, gini_df = get_analysis_output(
@@ -101,10 +98,10 @@ if check_password():
     st.markdown("---")
 
     st.header("Selected Dataframe")
-    st.dataframe(df_selection)
+    st.dataframe(df)
     st.markdown("---")
     st.header("Descriptive Statistics")
-    st.dataframe(df_selection.describe())
+    st.dataframe(df.describe())
     st.markdown("---")
 
     st.header("Pearson Correlations between all columns")
@@ -142,7 +139,6 @@ if check_password():
     st.plotly_chart(gini_fig)
     st.markdown("---")
 
-
     # HIDE STREAMLIT STYLE
     hide_streamlit_style = """
                             <style>
@@ -151,4 +147,4 @@ if check_password():
                             header {visibility: hidden;}
                             </style>
                             """
-    # st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
