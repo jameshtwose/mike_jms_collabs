@@ -119,15 +119,21 @@ def run_forecast(data, outcome, feature_list, random_state=42):
     )
 
     forecaster.fit(y=df_train[outcome], exog=df_train[feature_list])
-    y_pred = forecaster.predict(steps=steps, exog=df_test[feature_list])
-    y_pred.index = df_test.index
+    y_forecast = forecaster.predict(steps=steps, exog=df_train[feature_list])
+    y_forecast.index = df_test.index
+
+    y_forecast_w_pred = forecaster.predict(steps=steps, exog=df_test[feature_list])
+    y_forecast_w_pred.index = df_test.index
 
     return pd.concat(
         [
             df_train[outcome].reset_index().assign(**{"type": "train"}),
             df_test[outcome].reset_index().assign(**{"type": "test"}),
-            y_pred.reset_index()
+            y_forecast.reset_index()
             .rename(columns={"pred": outcome})
-            .assign(**{"type": "prediction"}),
+            .assign(**{"type": "forecast"}),
+            y_forecast_w_pred.reset_index()
+            .rename(columns={"pred": outcome})
+            .assign(**{"type": "forecast with predictors"}),
         ]
     )
