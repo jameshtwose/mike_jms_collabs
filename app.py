@@ -56,6 +56,21 @@ if check_password():
     )
     feature_list = df.drop(columns=[outcome]).columns.tolist()
 
+    # SIDEBAR - LOGO AND CREDITS
+    st.sidebar.markdown("---")
+    st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
+    st.sidebar.markdown("""
+                        <div style="text-align: center; padding-right: 10px;">
+                            <img alt="logo" src="https://services.jms.rocks/img/logo.png" width="100">
+                        </div>
+                        """,
+                        unsafe_allow_html=True)
+    st.sidebar.markdown("""
+                        <div style="text-align: center; color: #E8C003; margin-top: 40px; margin-bottom: 40px;">
+                            <a href="https://services.jms.rocks" style="color: #E8C003;">Created by James Twose</a>
+                        </div>
+                        """, unsafe_allow_html=True)
+
     # RUN MAIN ANALYSIS
     df_pred_test, shap_df, gini_df = get_analysis_output(
         df=df, outcome=outcome, feature_list=feature_list
@@ -117,7 +132,7 @@ if check_password():
     st.header("Pearson Correlations between all columns")
     plot_df = df.corr().round(3)
     # correlation plot
-    corr_heat = px.imshow(plot_df, text_auto=True)
+    corr_heat = px.imshow(plot_df, text_auto=True, color_continuous_scale="RdBu")
     st.plotly_chart(corr_heat)
     st.markdown("---")
 
