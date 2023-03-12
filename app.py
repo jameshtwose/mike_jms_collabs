@@ -63,18 +63,18 @@ if check_password():
     st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
     st.sidebar.markdown(
         """
-                        <div style="text-align: center; padding-right: 10px;">
-                            <img alt="logo" src="https://services.jms.rocks/img/logo.png" width="100">
-                        </div>
-                        """,
+        <div style="text-align: center; padding-right: 10px;">
+            <img alt="logo" src="https://services.jms.rocks/img/logo.png" width="100">
+        </div>
+        """,
         unsafe_allow_html=True,
     )
     st.sidebar.markdown(
         """
-                        <div style="text-align: center; color: #E8C003; margin-top: 40px; margin-bottom: 40px;">
-                            <a href="https://services.jms.rocks" style="color: #E8C003;">Created by James Twose</a>
-                        </div>
-                        """,
+        <div style="text-align: center; color: #E8C003; margin-top: 40px; margin-bottom: 40px;">
+            <a href="https://services.jms.rocks" style="color: #E8C003;">Created by James Twose</a>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
