@@ -3,7 +3,7 @@ import pandas as pd
 import plotly.express as px
 from plotly.colors import n_colors
 import streamlit as st
-from utils import run_analysis, check_password
+from utils import run_analysis, check_password, run_forecast
 
 # CONFIG
 st.set_page_config(
@@ -13,22 +13,21 @@ st.set_page_config(
 if check_password():
     # CREATE CACHE DATA FUNCTION
     @st.cache_data(ttl=3600)
-    def get_data(df_choice="unclear_result"):
-        if df_choice == "clear_result":
-            df = (
-                pd.read_excel("data/Input for statistics v1.xlsx", sheet_name=0)
+    def get_data(data_source="original"):
+        if data_source == "original":
+            return (
+                pd.read_csv("data/EPDM benchmark vs EPDM rubber Carbon black and Energy.csv")
                 .assign(**{"Date": lambda x: pd.to_datetime(x["Date"]).dt.date})
                 .dropna()
                 .set_index("Date")
             )
         else:
-            df = (
-                pd.read_excel("data/Input for statistics v1.xlsx", sheet_name=1)
+            return (
+                pd.read_csv("data/Revised input.csv")
                 .assign(**{"Date": lambda x: pd.to_datetime(x["Date"]).dt.date})
                 .dropna()
                 .set_index("Date")
             )
-        return df
 
     # CREATE ANALYSIS CACHE FUNCTION
     @st.cache_data(ttl=3600)
@@ -38,21 +37,32 @@ if check_password():
         )
         return df_pred_test, shap_df, gini_df
 
-    df = get_data()
+    # CREATE FORECAST CACHE FUNCTION
+    @st.cache_data(ttl=3600)
+    def get_forecast_output(df, outcome, feature_list):
+        plot_df = run_forecast(data=df, outcome=outcome, feature_list=feature_list)
+        return plot_df
 
-    # SIDEBAR
+    # SIDEBAR - TITLE AND DATA SOURCE
     st.sidebar.header("Please filter here:")
+    data_source = st.sidebar.selectbox("Select a data source:", options=["original", "preprocessed"])
+
+    # READ DATA
+    df = get_data(data_source=data_source)
+
+    # SIDEBAR - OUTCOME AND FEATURE LIST
     outcome = st.sidebar.selectbox(
         "Select an outcome measure of interest:", options=df.columns.tolist()
     )
-
-    # READ DATA
     feature_list = df.drop(columns=[outcome]).columns.tolist()
 
     # RUN MAIN ANALYSIS
     df_pred_test, shap_df, gini_df = get_analysis_output(
         df=df, outcome=outcome, feature_list=feature_list
     )
+
+    # RUN FORECAST ANALYSIS
+    forecast_plot_df = get_forecast_output(df=df, outcome=outcome, feature_list=feature_list)
 
     pred_test_corr = df_pred_test.corr().iloc[0, 1].round(3)
     likelihood_overfit = "Yes" if pred_test_corr > 0.8 else "No"
@@ -139,6 +149,30 @@ if check_password():
     st.plotly_chart(gini_fig)
     st.markdown("---")
 
+    # SHOW MAIN FORECAST OUTPUT
+    st.header("Forecasting time series")
+    # TIME SERIES PLOT
+    df_melt = df.reset_index().melt(id_vars="Date")
+    time_series_fig = px.line(
+        df_melt,
+        x="Date",
+        y="value",
+        color="variable",
+        title="Time Series Plot of all variables",
+    )
+    st.plotly_chart(time_series_fig)
+    # FORECAST TIME SERIES PLOT
+    forecast_fig = px.line(
+        forecast_plot_df,
+        x="Date",
+        y=outcome,
+        color="type",
+        markers=True,
+        title=f"Forecasted outcome == {outcome}",
+    )
+    st.plotly_chart(forecast_fig)
+    st.markdown("---")
+
     # HIDE STREAMLIT STYLE
     hide_streamlit_style = """
                             <style>
@@ -147,4 +181,4 @@ if check_password():
                             header {visibility: hidden;}
                             </style>
                             """
-    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+    # st.markdown(hide_streamlit_style, unsafe_allow_html=True)

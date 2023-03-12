@@ -2,8 +2,10 @@ import pandas as pd
 from sklearn.ensemble import RandomForestRegressor
 import shap
 import streamlit as st
+from skforecast.ForecasterAutoreg import ForecasterAutoreg
+from skforecast.model_selection import grid_search_forecaster
 
-shap.initjs()
+# shap.initjs()
 
 
 def check_password():
@@ -72,3 +74,60 @@ def run_analysis(data, outcome, feature_list, random_state=42):
     )
 
     return (df_test, shap_actual_df, gini_importance_df)
+
+
+def run_forecast(data, outcome, feature_list, random_state=42):
+    steps = int(data.shape[0] / 8)
+    df_train = data.iloc[:-steps]
+    df_test = data.iloc[-steps:]
+
+    forecaster = ForecasterAutoreg(
+        regressor=RandomForestRegressor(random_state=random_state),
+        lags=12,  # This value will be replaced in the grid search
+    )
+
+    # Lags used as predictors
+    lags_grid = [10, 20]
+
+    # Regressor's hyperparameters
+    param_grid = {"n_estimators": [50, 80, 100], "max_depth": [13, 15, 20]}
+
+    results_grid_df = grid_search_forecaster(
+        forecaster=forecaster,
+        y=df_train[outcome],
+        exog=df_train[feature_list],
+        param_grid=param_grid,
+        lags_grid=lags_grid,
+        steps=steps,
+        refit=True,
+        metric="mean_squared_error",
+        initial_train_size=int(data.shape[0] * 0.5),
+        fixed_train_size=False,
+        return_best=True,
+        verbose=False,
+    )
+
+    top_params_df = results_grid_df.head(1)
+
+    forecaster = ForecasterAutoreg(
+        regressor=RandomForestRegressor(
+            **top_params_df["params"].iloc[0], random_state=random_state
+        ),
+        lags=int(
+            top_params_df["lags"].iloc[0][-1]
+        ),  # This value will be replaced in the grid search
+    )
+
+    forecaster.fit(y=df_train[outcome], exog=df_train[feature_list])
+    y_pred = forecaster.predict(steps=steps, exog=df_test[feature_list])
+    y_pred.index = df_test.index
+
+    return pd.concat(
+        [
+            df_train[outcome].reset_index().assign(**{"type": "train"}),
+            df_test[outcome].reset_index().assign(**{"type": "test"}),
+            y_pred.reset_index()
+            .rename(columns={"pred": outcome})
+            .assign(**{"type": "prediction"}),
+        ]
+    )
