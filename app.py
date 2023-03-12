@@ -45,7 +45,9 @@ if check_password():
 
     # SIDEBAR - TITLE AND DATA SOURCE
     st.sidebar.header("Please filter here:")
-    data_source = st.sidebar.selectbox("Select a data source:", options=["original", "preprocessed"])
+    data_source = st.sidebar.selectbox(
+        "Select a data source:", options=["original", "preprocessed"]
+    )
 
     # READ DATA
     df = get_data(data_source=data_source)
@@ -59,17 +61,22 @@ if check_password():
     # SIDEBAR - LOGO AND CREDITS
     st.sidebar.markdown("---")
     st.sidebar.markdown("<br><br><br>", unsafe_allow_html=True)
-    st.sidebar.markdown("""
+    st.sidebar.markdown(
+        """
                         <div style="text-align: center; padding-right: 10px;">
                             <img alt="logo" src="https://services.jms.rocks/img/logo.png" width="100">
                         </div>
                         """,
-                        unsafe_allow_html=True)
-    st.sidebar.markdown("""
+        unsafe_allow_html=True,
+    )
+    st.sidebar.markdown(
+        """
                         <div style="text-align: center; color: #E8C003; margin-top: 40px; margin-bottom: 40px;">
                             <a href="https://services.jms.rocks" style="color: #E8C003;">Created by James Twose</a>
                         </div>
-                        """, unsafe_allow_html=True)
+                        """,
+        unsafe_allow_html=True,
+    )
 
     # RUN MAIN ANALYSIS
     df_pred_test, shap_df, gini_df = get_analysis_output(
