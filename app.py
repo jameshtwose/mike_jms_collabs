@@ -21,10 +21,18 @@ if check_password():
                 .dropna()
                 .set_index("Date")
             )
-        else:
+        elif data_source == "preprocessed":
             return (
                 pd.read_csv("data/Revised input.csv")
                 .assign(**{"Date": lambda x: pd.to_datetime(x["Date"]).dt.date})
+                .dropna()
+                .set_index("Date")
+            )
+        else:
+            return (
+                pd.read_csv("data/EPDM.csv")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
                 .dropna()
                 .set_index("Date")
             )
@@ -46,7 +54,7 @@ if check_password():
     # SIDEBAR - TITLE AND DATA SOURCE
     st.sidebar.header("Please filter here:")
     data_source = st.sidebar.selectbox(
-        "Select a data source:", options=["original", "preprocessed"]
+        "Select a data source:", options=["new ESP EPDM", "original", "preprocessed"]
     )
 
     # READ DATA
