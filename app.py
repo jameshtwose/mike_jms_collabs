@@ -28,6 +28,48 @@ if check_password():
                 .dropna()
                 .set_index("Date")
             )
+        elif data_source == "ESP EPDM":
+            return (
+                pd.read_excel("data/ESP data.xlsx", sheet_name="EPDM")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
+                .dropna()
+                .set_index("Date")
+            )
+        elif data_source == "ESP FKM":
+            return (
+                pd.read_excel("data/ESP data.xlsx", sheet_name="FKM")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
+                .dropna()
+                .set_index("Date")
+            )
+        elif data_source == "ESP HNBR":
+            return (
+                pd.read_excel("data/ESP data.xlsx", sheet_name="HNBR")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
+                .dropna()
+                .set_index("Date")
+            )
+
+        elif data_source == "ESP NBR":
+            return (
+                pd.read_excel("data/ESP data.xlsx", sheet_name="NBR")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
+                .dropna()
+                .set_index("Date")
+            )
+        elif data_source == "ESP VMQ":
+            return (
+                pd.read_excel("data/ESP data.xlsx", sheet_name="VMQ")
+                .assign(**{"Date": lambda x: pd.to_datetime(x["date"]).dt.date})
+                .drop(columns=["date"])
+                .dropna()
+                .set_index("Date")
+            )
+
         else:
             return (
                 pd.read_csv("data/EPDM.csv")
@@ -54,7 +96,17 @@ if check_password():
     # SIDEBAR - TITLE AND DATA SOURCE
     st.sidebar.header("Please filter here:")
     data_source = st.sidebar.selectbox(
-        "Select a data source:", options=["new ESP EPDM", "original", "preprocessed"]
+        "Select a data source:",
+        options=[
+            "ESP EPDM",
+            "ESP FKM",
+            "ESP HNBR",
+            "ESP NBR",
+            "ESP VMQ",
+            "previous ESP EPDM",
+            "original",
+            "preprocessed",
+        ],
     )
 
     # READ DATA
@@ -92,7 +144,16 @@ if check_password():
     )
 
     # RUN FORECAST ANALYSIS
-    forecast_plot_df = get_forecast_output(df=df, outcome=outcome, feature_list=feature_list)
+    # top 3 important features based on SHAP variance
+    top_3_features = (
+        shap_df.groupby("variable")
+        .var()["shap_data"]
+        .sort_values(ascending=False)
+        .head(3)
+        .index.tolist()
+    )
+    forecast_plot_df = get_forecast_output(df=df, outcome=outcome, feature_list=top_3_features)
+    # forecast_plot_df = get_forecast_output(df=df, outcome=outcome, feature_list=feature_list)
 
     pred_test_corr = df_pred_test.corr().iloc[0, 1].round(3)
     likelihood_overfit = "Yes" if pred_test_corr > 0.8 else "No"
@@ -155,6 +216,17 @@ if check_password():
     st.header("Model Creation and Feature Importance Calculation")
 
     # SHAP PLOT
+    st.markdown(
+        """
+        <div>
+            <p>For more information on SHAP Values, please see the following: 
+                <a href="https://christophm.github.io/interpretable-ml-book/shap.html"
+                style="color: #E8C003;">SHAP Values Explanation</a>
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     shap_fig = px.strip(
         shap_df,
         x="shap_data",
@@ -169,12 +241,23 @@ if check_password():
     st.plotly_chart(shap_fig)
 
     # GINI PLOT
+    st.markdown(
+        """
+        <div>
+            <p>For more information on Gini Gain, please see the following:
+                <a href="https://www.codecademy.com/article/fe-feature-importance-final"
+                style="color: #E8C003;">Gini Gain Explanation</a>
+            </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
     gini_fig = px.bar(
         gini_df,
         x="feature_importance",
         y="feature",
         color="feature",
-        title="Feature Importance Based on Gini Values",
+        title="Feature Importance Based on Gini Gain",
     )
     st.plotly_chart(gini_fig)
     st.markdown("---")
@@ -192,6 +275,10 @@ if check_password():
     )
     st.plotly_chart(time_series_fig)
     # FORECAST TIME SERIES PLOT
+    st.markdown(
+        f"""The forecast is based on the top 3 important features as defined
+        by the variance in SHAP Values. These are: :green[{top_3_features}]"""
+    )
     forecast_fig = px.line(
         forecast_plot_df,
         x="Date",
@@ -211,4 +298,4 @@ if check_password():
                             header {visibility: hidden;}
                             </style>
                             """
-    st.markdown(hide_streamlit_style, unsafe_allow_html=True)
+    # st.markdown(hide_streamlit_style, unsafe_allow_html=True)
