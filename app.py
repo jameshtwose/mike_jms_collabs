@@ -157,13 +157,14 @@ if check_password():
 
     pred_test_corr = df_pred_test.corr().iloc[0, 1].round(3)
     likelihood_overfit = "Yes" if pred_test_corr > 0.8 else "No"
-    shap_best_feature = (
+    shap_feature_importance_sorted = (
         shap_df.groupby("variable")
         .var()["shap_data"]
-        .sort_values(ascending=False)
-        .head(1)
-        .index.tolist()[0]
+        .sort_values(ascending=True)
+        .index.tolist()
     )
+    shap_best_feature = shap_feature_importance_sorted[-1]
+
     gini_best_feature = gini_df.head(1)["feature"].tolist()[0]
 
     # MAINPAGE
@@ -228,16 +229,17 @@ if check_password():
         unsafe_allow_html=True,
     )
     shap_fig = px.strip(
-        shap_df,
+        shap_df.sort_values("actual_data"),
         x="shap_data",
         y="variable",
         color="actual_data",
         color_discrete_sequence=n_colors(
-            "rgb(143, 15, 212)", "rgb(252, 221, 20)", df.shape[0], colortype="rgb"
+            "rgb(143, 15, 212)", "rgb(252, 221, 20)", shap_df.shape[0], colortype="rgb"
         ),
         title="Feature Importance Based on SHAP Values",
     )
     shap_fig.update_layout(showlegend=False, coloraxis_showscale=True)
+    shap_fig.update_yaxes(categoryorder='array', categoryarray=shap_feature_importance_sorted)
     st.plotly_chart(shap_fig)
 
     # GINI PLOT
